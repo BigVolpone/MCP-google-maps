@@ -1,9 +1,9 @@
-import fetch from "node-fetch";
+const fetch = require("node-fetch");
 
 // Récupère la clé API depuis les variables d'environnement
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 if (!GOOGLE_MAPS_API_KEY) {
-  throw new Error("La variable d'environnement GOOGLE_MAPS_API_KEY est manquante.");
+  throw new Error("La variable d'environnement GOOGLE_MAPS_API_KEY est manquante. Assurez-vous de l'avoir définie dans Railway.");
 }
 
 // Définir l'URL de base pour l'API Google Maps
@@ -31,7 +31,7 @@ interface PlaceResult {
  * @param type - (Optionnel) Type de lieu (restaurants, hôtels, etc.)
  * @returns Une promesse contenant les résultats ou une erreur
  */
-export async function searchPlaces(query: string, type?: string): Promise<PlaceResult[]> {
+async function searchPlaces(query: string, type?: string): Promise<PlaceResult[]> {
   // Construire l'URL de la requête
   const url = `${BASE_URL}/textsearch/json?query=${encodeURIComponent(
     query
@@ -56,3 +56,8 @@ export async function searchPlaces(query: string, type?: string): Promise<PlaceR
   // Retourner les résultats
   return data.results;
 }
+
+// Exporter la fonction pour l'utiliser ailleurs dans le projet
+module.exports = {
+  searchPlaces,
+};
