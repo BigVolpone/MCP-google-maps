@@ -5,17 +5,17 @@ WORKDIR /app
 # Copier les fichiers nécessaires
 COPY ./package.json ./package-lock.json ./
 COPY ./tsconfig.json ./
-COPY ./src ./src
+COPY ./*.ts ./  # Copier tous les fichiers TypeScript dans la racine
 
 # Installer les dépendances et construire le projet
 RUN npm install
-RUN npm run build
+RUN npx tsc  # Compiler les fichiers TypeScript
 
 # Étape 2 : Construire l'image de production
 FROM node:18-alpine
 WORKDIR /app
 
-# Copier les fichiers nécessaires
+# Copier uniquement les fichiers nécessaires pour l'exécution
 COPY --from=builder /app/dist ./dist
 COPY ./package.json ./package-lock.json ./
 
