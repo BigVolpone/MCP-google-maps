@@ -1,17 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
+    "target": "ES2015", // Nécessaire pour les identifiants privés (#private)
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "outDir": "./dist",
-    "rootDir": "."
+    "skipLibCheck": true, // Ignore les erreurs dans node_modules
+    "outDir": "./dist", // Les fichiers compilés seront générés ici
+    "rootDir": "." // Les fichiers sources sont dans la racine
   },
-  "include": [
-    "./*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["*.ts"], // Inclut tous les fichiers TypeScript à la racine
+  "exclude": ["node_modules"] // Exclut les dépendances
 }
