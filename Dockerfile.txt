@@ -1,26 +1,16 @@
-# Étape 1 : Construire l'application
-FROM node:18-alpine AS builder
+# Étape 1 : Utiliser une image de base stable
+FROM node:18
+
+# Étape 2 : Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers nécessaires
-COPY ./package.json ./package-lock.json ./
-COPY ./tsconfig.json ./
-COPY ./*.ts ./  # Copier tous les fichiers TypeScript dans la racine
+# Étape 3 : Copier le fichier package.json et installer les dépendances
+COPY package.json package-lock.json /app/
+RUN npm install --omit=dev
 
-# Installer les dépendances et construire le projet
-RUN npm install
-RUN npx tsc  # Compiler les fichiers TypeScript
+# Étape 4 : Copier le reste des fichiers et construire l'application
+COPY . /app/
+RUN npm run build
 
-# Étape 2 : Construire l'image de production
-FROM node:18-alpine
-WORKDIR /app
-
-# Copier uniquement les fichiers nécessaires pour l'exécution
-COPY --from=builder /app/dist ./dist
-COPY ./package.json ./package-lock.json ./
-
-# Installer uniquement les dépendances de production
-RUN npm ci --omit=dev
-
-# Démarrer le serveur MCP
-CMD ["node", "dist/index.js"]
+# Étape 5 : Démarrer l'application
+CMD ["npm", "start"]
