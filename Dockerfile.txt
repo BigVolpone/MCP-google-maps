@@ -3,9 +3,9 @@ FROM node:22.12-alpine AS builder
 WORKDIR /app
 
 # Copier uniquement les fichiers nécessaires
-COPY ./package.json ./
+COPY ./package.json ./package-lock.json ./ # Inclure package-lock.json pour npm install
 COPY ./tsconfig.json ./tsconfig.json
-COPY ./index.ts ./index.ts
+COPY ./src ./src # Copier tout le dossier src (si les fichiers TypeScript y sont)
 
 # Installer les dépendances
 RUN npm install
@@ -18,10 +18,11 @@ FROM node:22-alpine AS release
 WORKDIR /app
 
 # Copier les fichiers nécessaires depuis le build
-COPY --from=builder /app .
+COPY --from=builder /app/dist ./dist # Copier uniquement les fichiers compilés
+COPY ./package.json ./package-lock.json ./ # Copier package.json et lock pour npm ci
 
 # Installer uniquement les dépendances nécessaires pour la production
-RUN npm ci --ignore-scripts --omit=dev
+RUN npm ci --omit=dev
 
 # Commande pour démarrer l'application
 CMD ["npm", "start"]
